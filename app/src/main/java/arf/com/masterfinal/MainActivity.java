@@ -3,15 +3,21 @@ package arf.com.masterfinal;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.parse.FunctionCallback;
 import com.parse.Parse;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 
 import org.w3c.dom.Text;
+
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -79,6 +85,12 @@ public class MainActivity extends Activity {
             txtDearUser.setText(getResources().getString(R.string.dear_user) +" " + currentUser.getString("name"));
             txtMessage.setText(getResources().getString(R.string.txt_message, getResources().getString(R.string.app_owner)));
 
+            ParseCloud.callFunctionInBackground("facebookInfo", new HashMap<String, String>(), new FunctionCallback<Object>() {
+                @Override
+                public void done(Object object, ParseException e) {
+                    Log.d("hola", "hola");
+                }
+            });
 
 
         }
