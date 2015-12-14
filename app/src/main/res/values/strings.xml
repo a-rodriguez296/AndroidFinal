@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">MasterFinal</string>
+    <string name="title_activity_main">MainActivity</string>
+
+
+    <!-- Please put your application's app ID and keys here -->
+    <string name="parse_app_id">YzGhBkn9wzY9f1dxuatZGMIlzSmFVknx5n7zWm37</string>
+    <string name="parse_client_key">7rC2OS3LHbzBBnO2XbL7sqcjxS4XbaoPCVTPLeTa</string>
+    <string name="facebook_app_id">1048920791809456</string>
+
+
+
+    <string name="profile_logo_content_description">Logo</string>
+    <string name="profile_title_logged_in">Your are logged in as</string>
+    <string name="profile_logout_button_label">Log out</string>
+    <string name="profile_title_logged_out">You must be logged in to view your profile</string>
+    <string name="profile_login_button_label">Log in</string>
+    <string name="dear_user">Apreciado </string>
+    <string name="txt_message">Este es el trabajo final de %1$s en el Curso Startup Bootcamp.</string>
+    <string name="app_owner">Alejandro Rodríguez</string>
+</resources>
+
