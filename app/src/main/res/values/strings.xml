@@ -18,5 +18,6 @@
     <string name="dear_user">Apreciado </string>
     <string name="txt_message">Este es el trabajo final de %1$s en el Curso Startup Bootcamp.</string>
     <string name="app_owner">Alejandro Rodríguez</string>
+    <string name="logout">Logout</string>
 </resources>
 

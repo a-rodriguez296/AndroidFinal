@@ -4,18 +4,20 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.parse.FunctionCallback;
+import com.parse.LogOutCallback;
 import com.parse.Parse;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
-
-import org.w3c.dom.Text;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
@@ -35,8 +37,11 @@ public class MainActivity extends Activity {
     @Bind(R.id.txt_message)
     TextView txtMessage;
 
+    @Bind(R.id.btn_log_out)
+    Button btnLogout;
 
-
+    @Bind(R.id.img_profile)
+    ImageView imgProfile;
 
     private ParseUser currentUser;
 
@@ -76,6 +81,7 @@ public class MainActivity extends Activity {
         });*/
         currentUser = ParseUser.getCurrentUser();
 
+
         if(currentUser == null){
             ParseLoginBuilder builder = new ParseLoginBuilder(this);
             startActivityForResult(builder.build(), LOGIN_REQUEST);
@@ -88,12 +94,33 @@ public class MainActivity extends Activity {
             ParseCloud.callFunctionInBackground("facebookInfo", new HashMap<String, String>(), new FunctionCallback<Object>() {
                 @Override
                 public void done(Object object, ParseException e) {
-                    Log.d("hola", "hola");
+                    String userID = ((HashMap<String, String>) object).get("id");
+                    Picasso.with(getApplicationContext()).load(String.format("https://graph.facebook.com/%s/picture?type=normal", userID)).into(imgProfile);
+
                 }
             });
 
 
         }
+
+
+
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                currentUser.logOutInBackground(new LogOutCallback() {
+                    @Override
+                    public void done(ParseException e) {
+
+                        ParseLoginBuilder builder = new ParseLoginBuilder(MainActivity.this);
+                        startActivityForResult(builder.build(), LOGIN_REQUEST);
+
+                    }
+                });
+            }
+        });
 
 
     }
