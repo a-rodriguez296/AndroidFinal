@@ -87,24 +87,8 @@ public class MainActivity extends Activity {
             startActivityForResult(builder.build(), LOGIN_REQUEST);
         }
         else{
-
-            txtDearUser.setText(getResources().getString(R.string.dear_user) +" " + currentUser.getString("name"));
-            txtMessage.setText(getResources().getString(R.string.txt_message, getResources().getString(R.string.app_owner)));
-
-            ParseCloud.callFunctionInBackground("facebookInfo", new HashMap<String, String>(), new FunctionCallback<Object>() {
-                @Override
-                public void done(Object object, ParseException e) {
-                    String userID = ((HashMap<String, String>) object).get("id");
-                    Picasso.with(getApplicationContext()).load(String.format("https://graph.facebook.com/%s/picture?type=normal", userID)).into(imgProfile);
-
-                }
-            });
-
-
+            updateUI();
         }
-
-
-
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,20 +105,32 @@ public class MainActivity extends Activity {
                 });
             }
         });
-
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+        currentUser = ParseUser.getCurrentUser();
+        updateUI();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+    }
 
+    public void updateUI(){
+        txtDearUser.setText(getResources().getString(R.string.dear_user) +" " + currentUser.getString("name"));
+        txtMessage.setText(getResources().getString(R.string.txt_message, getResources().getString(R.string.app_owner)));
 
+        ParseCloud.callFunctionInBackground("facebookInfo", new HashMap<String, String>(), new FunctionCallback<Object>() {
+            @Override
+            public void done(Object object, ParseException e) {
+                String userID = ((HashMap<String, String>) object).get("id");
+                Picasso.with(getApplicationContext()).load(String.format("https://graph.facebook.com/%s/picture?type=normal", userID)).into(imgProfile);
+
+            }
+        });
     }
 }
