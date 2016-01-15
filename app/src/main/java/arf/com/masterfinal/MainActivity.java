@@ -16,6 +16,7 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.ui.ParseLoginBuilder;
 import com.squareup.picasso.Picasso;
 
@@ -57,28 +58,6 @@ public class MainActivity extends Activity {
 
         ButterKnife.bind(this);
 
-
-/*        ParseUser user = new ParseUser();
-        user.setUsername("my name");
-        user.setPassword("my pass");
-        user.setEmail("email@example.com");
-
-// other fields can be set just like with ParseObject
-        user.put("phone", "650-555-0000");
-
-        user.signUpInBackground(new SignUpCallback() {
-
-
-            @Override
-            public void done(com.parse.ParseException e) {
-                if (e == null){
-                    Log.d("","");
-                }
-                else{
-                    Log.d("","");
-                }
-            }
-        });*/
         currentUser = ParseUser.getCurrentUser();
 
 
@@ -112,7 +91,26 @@ public class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
         currentUser = ParseUser.getCurrentUser();
-        updateUI();
+        ParseCloud.callFunctionInBackground("facebookInfo", new HashMap<String, String>(), new FunctionCallback<Object>() {
+            @Override
+            public void done(Object object, ParseException e) {
+                String userID = ((HashMap<String, String>) object).get("id");
+                String imageUrl = String.format("https://graph.facebook.com/%s/picture?type=normal", userID);
+
+
+                currentUser.put("name", ((HashMap<String, String>) object).get("name"));
+                currentUser.put("imgUrl", imageUrl);
+
+                currentUser.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        updateUI();
+                        ;
+                    }
+                });
+
+            }
+        });
     }
 
     @Override
@@ -121,16 +119,10 @@ public class MainActivity extends Activity {
     }
 
     public void updateUI(){
-        txtDearUser.setText(getResources().getString(R.string.dear_user) +" " + currentUser.getString("name"));
+        txtDearUser.setText(getResources().getString(R.string.dear_user) + " " + currentUser.getString("name"));
         txtMessage.setText(getResources().getString(R.string.txt_message, getResources().getString(R.string.app_owner)));
 
-        ParseCloud.callFunctionInBackground("facebookInfo", new HashMap<String, String>(), new FunctionCallback<Object>() {
-            @Override
-            public void done(Object object, ParseException e) {
-                String userID = ((HashMap<String, String>) object).get("id");
-                Picasso.with(getApplicationContext()).load(String.format("https://graph.facebook.com/%s/picture?type=normal", userID)).into(imgProfile);
-
-            }
-        });
+        String imageUrl = (String) currentUser.get("imgUrl");
+        Picasso.with(getApplicationContext()).load(imageUrl).into(imgProfile);
     }
 }
